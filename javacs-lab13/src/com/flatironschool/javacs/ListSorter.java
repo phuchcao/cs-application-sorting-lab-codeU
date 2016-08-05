@@ -63,8 +63,41 @@ public class ListSorter<T> {
 	 * @return
 	 */
 	public List<T> mergeSort(List<T> list, Comparator<T> comparator) {
-        // FILL THIS IN!
-        return null;
+		if (list.size() > 1){
+	        int mid = list.size() / 2;
+	        List<T> left = list.subList(0, mid);
+	        List<T> right = list.subList(mid, list.size());
+	        left = mergeSort(left, comparator);
+	        right = mergeSort(right, comparator);
+	        list = merge(left, right, comparator);
+	    } 
+	    return list;
+	}
+
+	private List<T> merge(List<T> listOne, List<T> listTwo, Comparator<T> comparator){
+		int indexOne = 0;
+		int indexTwo = 0;
+		List<T> merged = new ArrayList<T>();
+		while (indexOne < listOne.size() && indexTwo < listTwo.size()){
+			T one = listOne.get(indexOne);
+			T two = listTwo.get(indexTwo);
+			if (comparator.compare(one, two) < 0){
+				merged.add(one);
+				indexOne++;
+			} else {
+				merged.add(two);
+				indexTwo++;
+			}
+		}
+		while (indexOne < listOne.size()){
+			merged.add(listOne.get(indexOne));
+			indexOne++;
+		}
+		while (indexTwo < listTwo.size()){
+			merged.add(listTwo.get(indexTwo));
+			indexTwo++;
+		}
+		return merged;
 	}
 
 	/**
@@ -75,7 +108,16 @@ public class ListSorter<T> {
 	 * @return
 	 */
 	public void heapSort(List<T> list, Comparator<T> comparator) {
-        // FILL THIS IN!
+		int size = list.size();
+		PriorityQueue<T> pq = new PriorityQueue<T>(size, comparator);
+        for (T elem: list){
+        	pq.offer(elem);
+        	System.out.println(elem);
+        }
+        list.clear();
+        for (int i = 0; i < size; i++){
+        	list.add(pq.poll());
+        }
 	}
 
 	
@@ -89,8 +131,25 @@ public class ListSorter<T> {
 	 * @return
 	 */
 	public List<T> topK(int k, List<T> list, Comparator<T> comparator) {
-        // FILL THIS IN!
-        return null;
+        PriorityQueue<T> pq = new PriorityQueue<T>(k, comparator);
+        for (T elem: list){
+        	if (pq.size() < k){
+        		pq.offer(elem);
+        	} else {
+        		T top = pq.peek();
+        		if (top != null){
+        			if (comparator.compare(elem, top) > 0){
+        				pq.poll();
+        				pq.offer(elem);
+        			}
+        		}
+        	}
+       	}
+        list.clear();
+        for (int i = 0; i < k; i++){
+        	list.add(pq.poll());
+        }
+        return list;
 	}
 
 	
